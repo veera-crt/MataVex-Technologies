@@ -97,7 +97,7 @@
 
             <div class="header-center">
                 <nav class="desktop-nav">
-                    <a href="index.html" >Home</a>
+                    <a href="index.html">Home</a>
                     <div class="nav-dropdown">
                         <a href="#">Projects <ion-icon name="chevron-down-outline" class="nav-chevron"></ion-icon></a>
                         <div class="dropdown-menu">
@@ -280,6 +280,7 @@
                                     document.getElementById('checkoutNode').style.display = 'none';
                                     document.getElementById('successNode').style.display = 'block';
                                     syncCartQuantity();
+                                    if (typeof syncLibraryQuantity === "function") syncLibraryQuantity();
                                 } else {
                                     alert('Security Verification Failed. Transaction reversed.');
                                     window.location.reload();

@@ -7,6 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
     checkLogin();
     initCartUI();
     syncCartQuantity();
+    syncLibraryQuantity();
 });
 
 function checkLogin() {
@@ -450,16 +451,30 @@ function initCartUI() {
     if (!cartTrigger) return;
 
     // 1. Inject Home/Library Icon (left of cart)
+    const libraryWrapper = document.createElement('div');
+    libraryWrapper.className = 'cart-wrapper';
+    libraryWrapper.style.position = 'relative';
+    libraryWrapper.style.display = 'inline-flex';
+    libraryWrapper.style.marginRight = '15px';
+
     const homeIcon = document.createElement('a');
     homeIcon.href = 'library.html';
     homeIcon.className = 'nav-icon-link';
     homeIcon.innerHTML = '<ion-icon name="home-outline"></ion-icon>';
     homeIcon.title = 'My Purchased Projects';
-    homeIcon.style.marginRight = '15px'; // Spacing
     homeIcon.style.fontSize = '24px';
     homeIcon.style.color = 'inherit';
     homeIcon.style.display = 'inline-flex';
-    cartTrigger.parentNode.insertBefore(homeIcon, cartTrigger.parentNode.firstChild);
+
+    const libraryBadge = document.createElement('div');
+    libraryBadge.className = 'cart-badge'; // Reusing position styling
+    libraryBadge.id = 'libraryBadge';
+    libraryBadge.style.background = '#10B981'; // Distinctive green for purchased items
+
+    libraryWrapper.appendChild(homeIcon);
+    libraryWrapper.appendChild(libraryBadge);
+
+    cartTrigger.parentNode.insertBefore(libraryWrapper, cartTrigger.parentNode.firstChild);
 
     // 2. Inject Badge with dedicated wrapper for perfect alignment
     const wrapper = document.createElement('div');
@@ -536,5 +551,34 @@ async function syncCartQuantity() {
         }
     } catch (err) {
         console.warn('[CART_SYNC_FAIL]: Could not sync cart quantity.');
+    }
+}
+
+async function syncLibraryQuantity() {
+    const userStr = localStorage.getItem('matavex_user');
+    const badge = document.getElementById('libraryBadge');
+    if (!userStr || !badge) {
+        if (badge) badge.classList.remove('active');
+        return;
+    }
+
+    try {
+        const userData = JSON.parse(userStr);
+        const userId = userData[0];
+
+        const response = await fetch(`/api/v1/payments/${userId}`);
+        if (response.ok) {
+            const projects = await response.json();
+            const count = projects.length;
+
+            if (count > 0) {
+                badge.textContent = count;
+                badge.classList.add('active');
+            } else {
+                badge.classList.remove('active');
+            }
+        }
+    } catch (err) {
+        console.warn('[LIBRARY_SYNC_FAIL]: Could not sync library quantity.');
     }
 }
