@@ -453,9 +453,14 @@ def verify_payment():
             invoice.generate_invoice_pdf(order_details, pdf_items, pdf_path)
             
             if user_email:
-                invoice.send_invoice_email(user_email, pdf_path, data['razorpay_payment_id'])
+                print(f"Executing secure SMTP block for user: {user_email}...")
+                success = invoice.send_invoice_email(user_email, pdf_path, data['razorpay_payment_id'])
+                if not success:
+                    print("Invoice email failed to send (Check SMTP config/credentials or SPAM folder)")
+                else:
+                    print("Invoice generated and email dispatched successfully!")
         except Exception as inv_err:
-            print(f"Failed to generate/send invoice: {inv_err}")
+            print(f"Error during PDF archiving or email dispatch: {inv_err}")
 
         # 4. Clear Cart
         db.execute_query("DELETE FROM cart WHERE user_id = %s", (user_id,))

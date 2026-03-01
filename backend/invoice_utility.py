@@ -100,7 +100,8 @@ def send_invoice_email(user_email, pdf_path, payment_id):
 
     msg = MIMEMultipart()
     msg['From'] = email_user
-    msg['To'] = f"{user_email}, {owner_email}"
+    msg['To'] = user_email
+    msg['Cc'] = owner_email
     msg['Subject'] = f"Invoice for your Matavex Tech Order - {payment_id}"
 
     body = f"""
@@ -128,6 +129,7 @@ def send_invoice_email(user_email, pdf_path, payment_id):
             part.add_header('Content-Disposition', f"attachment; filename= {filename}")
             msg.attach(part)
     except Exception as e:
+        print(f"Exception preparing email attachment: {e}")
         return False
 
     # Send
@@ -140,4 +142,7 @@ def send_invoice_email(user_email, pdf_path, payment_id):
         server.quit()
         return True
     except Exception as e:
+        print(f"Exception sending SMTP email: {e}")
+        import traceback
+        traceback.print_exc()
         return False
