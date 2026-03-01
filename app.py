@@ -435,9 +435,8 @@ def verify_payment():
 
         # 3. Generate and Send Invoice
         try:
-            invoice_dir = "invoices"
-            if not os.path.exists(invoice_dir):
-                os.makedirs(invoice_dir)
+            import tempfile
+            invoice_dir = tempfile.gettempdir()
             
             pdf_filename = f"invoice_{data['razorpay_payment_id']}.pdf"
             pdf_path = os.path.join(invoice_dir, pdf_filename)
