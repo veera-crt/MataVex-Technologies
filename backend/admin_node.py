@@ -21,7 +21,7 @@ def admin_login():
 
         admin_id, password_hash = result[0]
 
-        if pbkdf2_sha256.verify(password, password_hash):
+        if auth.verify_password(password, password_hash):
             token = auth.create_access_token(data={"sub": username, "role": "admin"})
             return jsonify({
                 "success": True,
@@ -31,7 +31,7 @@ def admin_login():
         else:
             return jsonify({"detail": "Invalid credentials"}), 401
     except Exception as e:
-        return jsonify({"detail": "Login failed"}), 500
+        return jsonify({"detail": f"Login failed: {str(e)}"}), 500
 
 def get_all_tables():
     try:
