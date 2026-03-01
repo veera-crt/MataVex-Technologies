@@ -19,6 +19,7 @@ def init_pool():
             DATABASE_URL
         )
     except Exception as e:
+        pass
 
 init_pool()
 
