@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login | Matavex Technologies</title>
+    <link rel="stylesheet" href="css/index.css">
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+    <style>
+        .login-box {
+            max-width: 400px;
+            margin: 150px auto;
+            padding: 40px;
+            background: #fff;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.05);
+            border: 1px solid #eee;
+        }
+
+        .login-box h1 {
+            font-size: 24px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+
+        .btn-login {
+            width: 100%;
+            padding: 14px;
+            background: var(--color-primary);
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="login-box">
+        <h1>Admin Control Node</h1>
+        <div id="loginForm">
+            <div class="form-group">
+                <label>Username</label>
+                <input type="text" id="username" placeholder="Enter admin username">
+            </div>
+            <div class="form-group">
+                <label>Password</label>
+                <input type="password" id="password" placeholder="Enter security key">
+            </div>
+            <button class="btn-login" id="loginBtn">Authorize Access</button>
+            <p id="errMsg" style="color:red; font-size:12px; margin-top:15px; text-align:center; display:none;"></p>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('loginBtn').onclick = async () => {
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const err = document.getElementById('errMsg');
+
+            err.style.display = 'none';
+
+            try {
+                const res = await fetch('http://localhost:8000/api/v1/admin/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, password })
+                });
+
+                if (res.ok) {
+                    const data = await res.json();
+                    localStorage.setItem('matavex_admin_token', data.access_token);
+                    window.location.href = 'admin.html';
+                } else {
+                    const d = await res.json();
+                    err.textContent = d.detail || 'Authorization Denied';
+                    err.style.display = 'block';
+                }
+            } catch (e) {
+                console.error('Fetch Error:', e);
+                err.textContent = 'System Synchronize Failure: ' + e.message;
+                err.style.display = 'block';
+            }
+        };
+    </script>
+</body>
+
+</html>

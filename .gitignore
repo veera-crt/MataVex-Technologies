@@ -1,0 +1,22 @@
+# Python virtual environments
+backend/venv/
+venv/
+env/
+.env
+
+# Python caching
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# MataVex Documents & PDF Archives
+invoices/
+*.pdf
+
+# Operating System Files
+.DS_Store
+Thumbs.db
+
+# Dynamic Logs (Already Cleared but just in case)
+*.log

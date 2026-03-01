@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>System Projects | Matavex Technologies</title>
+    <link rel="stylesheet" href="css/index.css">
+    <!-- Ionicons for the interface icons -->
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+    <link rel="icon" type="image/png" href="assets/monogram.png">
+</head>
+
+<body>
+
+    <!-- Mobile Slide Menu -->
+    <div class="mobile-drawer" id="mobileDrawer">
+        <div class="drawer-header">
+            <div class="drawer-logo">
+                <img src="assets/logo.png" alt="MataVex Technologies" style="height: 40px; width: auto;">
+            </div>
+            <ion-icon name="close-outline" class="close-drawer" id="closeDrawer"></ion-icon>
+        </div>
+        <div class="drawer-links">
+            <a href="index.html">Home</a>
+            <div class="drawer-accordion">
+                <div class="accordion-header" id="fullStackToggle">
+                    Projects <ion-icon name="chevron-down-outline"></ion-icon>
+                </div>
+                <div class="accordion-content" id="fullStackContent">
+                    <a href="ai.html">AI Intelligence</a>
+                    <a href="data-science.html">Data Analytics</a>
+                    <a href="cybersecurity.html">Cyber Security</a>
+                    <a href="systems.html" class="active">Systems</a>
+                </div>
+            </div>
+            <a href="backend.html">Architecture</a>
+            <a href="frontend.html">Interface</a>
+            <a href="consulting.html">Consulting</a>
+        </div>
+        <div class="drawer-footer">
+            &copy; 2026 Matavex Technologies
+        </div>
+    </div>
+    <div class="drawer-overlay" id="drawerOverlay"></div>
+
+    <header>
+        <div class="announcement-bar">
+            Secure Delivery & Premium Project Support Available
+        </div>
+        <div class="header-top">
+            <div class="header-left">
+                <a href="index.html" class="logo-main" id="logoMain">
+                    <img src="assets/monogram.png" alt="MataVex" class="monogram-icon">
+                    <span class="brand-text">MataVex <span class="highlight">Tech</span></span>
+                </a>
+
+                <div class="search-box-inline" id="searchBoxInline">
+                    <ion-icon name="search-outline" class="search-icon" id="searchIconTrigger"></ion-icon>
+                    <div class="search-input-field" id="searchInputField">
+                        <input type="text" id="projectSearchInput" placeholder="Filter projects..." autocomplete="off">
+                        <ion-icon name="close-outline" class="search-close-inline" id="closeSearchInline"></ion-icon>
+                    </div>
+                </div>
+            </div>
+
+            <div class="header-center">
+                <nav class="desktop-nav">
+                    <a href="index.html" >Home</a>
+                    <div class="nav-dropdown active">
+                        <a href="#">Projects <ion-icon name="chevron-down-outline" class="nav-chevron"></ion-icon></a>
+                        <div class="dropdown-menu">
+                            <a href="ai.html">AI Intelligence</a>
+                            <a href="data-science.html">Data Analytics</a>
+                            <a href="cybersecurity.html">Cyber Security</a>
+                            <a href="systems.html" class="active">Systems</a>
+                        </div>
+                    </div>
+                    <a href="backend.html">Architecture</a>
+                    <a href="frontend.html">Interface</a>
+                    <a href="consulting.html">Consulting</a>
+                </nav>
+            </div>
+
+            <div class="header-right">
+                <ion-icon name="bag-handle-outline" class="cart-trigger"></ion-icon>
+
+                <div id="logged-in-user" style="display: none; align-items: center;">
+                    <span id="header-user-name"
+                        style="font-size: 13px; font-weight: 600; margin-right: 12px; color: var(--color-primary);"></span>
+                    <button onclick="logout()" class="logout-pill" title="Logout">
+                        <ion-icon name="log-out-outline"></ion-icon>
+                    </button>
+                </div>
+
+                <div id="logged-out-user" style="display: flex; align-items: center;">
+                    <a href="login.html" title="Login" style="color: inherit; display: flex; align-items: center;">
+                        <ion-icon name="person-circle-outline" class="profile-icon"></ion-icon>
+                    </a>
+                </div>
+
+                <ion-icon name="menu-outline" class="mobile-menu-icon"></ion-icon>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <div class="section-container" style="padding-top: 180px;">
+            <h1 class="page-title">System Architecture & Full-Stack Projects</h1>
+            <p class="page-subtitle">
+                High-performance, scalable foundations for modern enterprise. Our system projects bridge the gap between
+                kernel-level efficiency and cloud-scale scalability.
+            </p>
+
+            <div class="product-grid" id="systemsProjectsGrid">
+                <!-- Systems Projects will be loaded here dynamically -->
+                <div class="loading-state"
+                    style="grid-column: 1/-1; text-align: center; padding: 40px; color: var(--color-text-muted);">
+                    <div class="spinner" style="margin: 0 auto 20px;"></div>
+                    <p>Loading data...</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            loadProjects('systems', 'systemsProjectsGrid');
+        });
+    </script>
+
+    <footer
+        style="background: var(--color-bg-alt); padding: 80px 0 60px; border-top: 1px solid var(--color-border); text-align: center;">
+        <div class="section-container">
+            <div class="footer-logo" style="margin-bottom: 30px;">
+                <img src="assets/monogram.png" alt="MataVex" style="height: 50px; margin-bottom: 10px;">
+                <h3 style="font-size: 22px; color: var(--color-text-heading);">MataVex <span
+                        style="color: var(--color-primary);">Tech</span></h3>
+            </div>
+            <p
+                style="color: var(--color-text-muted); font-size: 14px; margin-bottom: 25px; max-width: 600px; margin-left: auto; margin-right: auto;">
+                Engineering Secure Digital Futures through premium software projects and cybersecurity projects.
+            </p>
+            <div class="footer-legal" style="margin-bottom: 25px; font-size: 13px; font-weight: 600;">
+                <a href="privacy.html"
+                    style="color: var(--color-text-muted); text-decoration: none; margin: 0 15px;">Privacy Policy</a> |
+                <a href="terms.html"
+                    style="color: var(--color-text-muted); text-decoration: none; margin: 0 15px;">Terms of Service</a>
+                |
+                <a href="refund.html"
+                    style="color: var(--color-text-muted); text-decoration: none; margin: 0 15px;">Refund Policy</a> |
+                <a href="contact.html"
+                    style="color: var(--color-text-muted); text-decoration: none; margin: 0 15px;">Contact</a>
+            </div>
+            <p style="font-size: 12px; color: var(--color-text-muted); opacity: 0.8;">
+                &copy; 2026 MataVex Technologies. All rights reserved.
+            </p>
+        </div>
+    </footer>
+
+    <div class="chat-btn">
+        <ion-icon name="chatbubble-ellipses-outline"></ion-icon>
+        Chat
+    </div>
+
+    <!-- Custom Premium Logout Modal -->
+    <div id="logoutModal" class="modal-overlay">
+        <div class="modal-card">
+            <div class="modal-icon">
+                <ion-icon name="log-out-outline"></ion-icon>
+            </div>
+            <h2>Confirm Logout</h2>
+            <p>Are you sure you want to end your secure session with Matavex Technologies?</p>
+            <div class="modal-actions">
+                <button onclick="closeLogoutModal()" class="btn-secondary">Cancel</button>
+                <button onclick="confirmLogout()" class="btn-danger">Logout</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/main.js"></script>
+</body>
+
+</html>

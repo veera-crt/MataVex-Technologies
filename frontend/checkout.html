@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Secure Checkout | Matavex Technologies</title>
+    <link rel="stylesheet" href="css/index.css">
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <link rel="icon" type="image/png" href="assets/monogram.png">
+    <style>
+        .checkout-node {
+            max-width: 800px;
+            margin: 180px auto 100px;
+            padding: 40px;
+            background: #fff;
+            border-radius: 24px;
+            box-shadow: 0 20px 50px rgba(0, 107, 182, 0.08);
+            border: 1px solid var(--color-border);
+        }
+
+        .order-summary {
+            margin-bottom: 40px;
+            padding-bottom: 30px;
+            border-bottom: 1px solid var(--color-border);
+        }
+
+        .order-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px dashed #eee;
+        }
+
+        .order-item:last-child {
+            border: none;
+        }
+
+        .order-item h4 {
+            font-size: 16px;
+            color: var(--color-text-heading);
+        }
+
+        .order-item span {
+            color: var(--color-primary);
+            font-weight: 700;
+        }
+
+        .total-node {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 20px;
+        }
+
+        .total-node h2 {
+            font-size: 24px;
+            font-weight: 800;
+        }
+
+        .payment-lock {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            color: #10b981;
+            font-weight: 600;
+            font-size: 14px;
+            margin-top: 30px;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <div class="announcement-bar">
+            Secure Delivery & Premium Project Support Available
+        </div>
+        <div class="header-top">
+            <div class="header-left">
+                <a href="index.html" class="logo-main" id="logoMain">
+                    <img src="assets/monogram.png" alt="MataVex" class="monogram-icon">
+                    <span class="brand-text">MataVex <span class="highlight">Tech</span></span>
+                </a>
+
+                <div class="search-box-inline" id="searchBoxInline">
+                    <ion-icon name="search-outline" class="search-icon" id="searchIconTrigger"></ion-icon>
+                    <div class="search-input-field" id="searchInputField">
+                        <input type="text" id="projectSearchInput" placeholder="Filter projects..." autocomplete="off">
+                        <ion-icon name="close-outline" class="search-close-inline" id="closeSearchInline"></ion-icon>
+                    </div>
+                </div>
+            </div>
+
+            <div class="header-center">
+                <nav class="desktop-nav">
+                    <a href="index.html" >Home</a>
+                    <div class="nav-dropdown">
+                        <a href="#">Projects <ion-icon name="chevron-down-outline" class="nav-chevron"></ion-icon></a>
+                        <div class="dropdown-menu">
+                            <a href="ai.html">AI Intelligence</a>
+                            <a href="data-science.html">Data Analytics</a>
+                            <a href="cybersecurity.html">Cyber Security</a>
+                            <a href="systems.html">Systems</a>
+                        </div>
+                    </div>
+                    <a href="backend.html">Architecture</a>
+                    <a href="frontend.html">Interface</a>
+                    <a href="consulting.html">Consulting</a>
+                </nav>
+            </div>
+
+            <div class="header-right">
+                <ion-icon name="bag-handle-outline" class="cart-trigger"></ion-icon>
+
+                <div id="logged-in-user" style="display: none; align-items: center;">
+                    <span id="header-user-name"
+                        style="font-size: 13px; font-weight: 600; margin-right: 12px; color: var(--color-primary);"></span>
+                    <button onclick="logout()" class="logout-pill" title="Logout">
+                        <ion-icon name="log-out-outline"></ion-icon>
+                    </button>
+                </div>
+
+                <div id="logged-out-user" style="display: flex; align-items: center;">
+                    <a href="login.html" title="Login" style="color: inherit; display: flex; align-items: center;">
+                        <ion-icon name="person-circle-outline" class="profile-icon"></ion-icon>
+                    </a>
+                </div>
+
+                <ion-icon name="menu-outline" class="mobile-menu-icon"></ion-icon>
+            </div>
+        </div>
+    </header>
+
+    <main class="section-container">
+        <div class="checkout-node" id="checkoutNode">
+            <h1 class="page-title" style="text-align:left; margin-bottom:10px;">Secure Checkout</h1>
+            <p style="color:var(--color-text-para); margin-bottom:30px;">Verify your order details and proceed to
+                high-speed payment gateway.</p>
+
+            <div id="orderItems" class="order-summary">
+                <!-- Data from JS -->
+                <p>Synchronizing with Matavex Finance Node...</p>
+            </div>
+
+            <div class="total-node">
+                <div>
+                    <p
+                        style="font-size:12px; font-weight:700; color:var(--color-text-muted); text-transform:uppercase;">
+                        Grand Total</p>
+                    <h2 id="grandTotal">₹0.00</h2>
+                </div>
+                <div style="display: flex; gap: 15px;">
+                    <button id="cancelBtn" class="btn-secondary" style="padding:15px 30px;">Cancel</button>
+                    <button id="payBtn" class="btn-proceed" style="padding:15px 50px;" disabled>
+                        <span id="payBtnText">Complete Transaction</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="payment-lock">
+                <ion-icon name="shield-checkmark-outline" style="font-size:18px;"></ion-icon>
+                128-bit Encrypted Transaction Node
+            </div>
+        </div>
+
+        <div id="successNode" class="checkout-node" style="display:none; text-align:center;">
+            <ion-icon name="checkmark-circle" style="font-size:80px; color:#10b981; margin-bottom:20px;"></ion-icon>
+            <h1 class="page-title">Transaction Successful</h1>
+            <p>Your project acquisition has been archived in our secure node. Check your profile for license details.
+            </p>
+            <a href="index.html" class="btn-proceed"
+                style="display:inline-block; margin-top:30px; text-decoration:none;">Return to Portal</a>
+        </div>
+    </main>
+
+    <script src="js/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const userStr = localStorage.getItem('matavex_user');
+            if (!userStr) {
+                window.location.href = 'login.html';
+                return;
+            }
+
+            const userData = JSON.parse(userStr);
+            const userId = userData[0];
+
+            // Handle Cancel immediately
+            document.getElementById('cancelBtn').onclick = () => {
+                window.location.href = 'cart.html';
+            };
+
+            // Set initial loading state for pay button
+            const payBtn = document.getElementById('payBtn');
+            const payBtnText = document.getElementById('payBtnText');
+            payBtn.disabled = true;
+            payBtnText.innerHTML = '<span class="loading-mini"></span> Synchronizing Node...';
+
+            // Fetch Cart for Summary
+            try {
+                const response = await fetch(`/api/v1/cart/${userId}`);
+                if (!response.ok) throw new Error('Fetch Failed');
+
+                const items = await response.json();
+
+                if (items.length === 0) {
+                    window.location.href = 'cart.html';
+                    return;
+                }
+
+                let html = '';
+                let total = 0;
+                items.forEach(item => {
+                    total += item.price;
+                    html += `
+                        <div class="order-item">
+                            <h4>${item.name}</h4>
+                            <span>₹${item.price.toLocaleString('en-IN')}</span>
+                        </div>
+                    `;
+                });
+
+                document.getElementById('orderItems').innerHTML = html;
+                document.getElementById('grandTotal').textContent = `₹${total.toLocaleString('en-IN', { minimumFractionDigits: 2 })}`;
+
+                // Enable button after fetching
+                const payBtn = document.getElementById('payBtn');
+                const payBtnText = document.getElementById('payBtnText');
+                payBtn.disabled = false;
+                payBtnText.textContent = 'Complete Transaction';
+
+                // Initialize Razorpay
+                payBtn.onclick = async () => {
+                    const btn = document.getElementById('payBtn');
+                    btn.disabled = true;
+                    btn.innerHTML = '<span class="loading-mini"></span> Launching Node...';
+
+                    try {
+                        const orderRes = await fetch('/api/v1/payment/create', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ user_id: userId })
+                        });
+
+                        if (!orderRes.ok) {
+                            const errData = await orderRes.json();
+                            throw new Error(errData.detail || 'Failed to initialize payment node');
+                        }
+
+                        const order = await orderRes.json();
+
+                        const options = {
+                            key: order.key_id,
+                            amount: Math.round(order.amount * 100),
+                            currency: "INR",
+                            name: "Matavex Tech",
+                            description: "Project Acquisition Fee",
+                            order_id: order.order_id,
+                            prefill: {
+                                name: userData[3],
+                                email: userData[2]
+                            },
+                            handler: async function (res) {
+                                // Verify
+                                const verifyRes = await fetch('/api/v1/payment/verify', {
+                                    method: 'POST',
+                                    headers: { 'Content-Type': 'application/json' },
+                                    body: JSON.stringify({
+                                        ...res,
+                                        user_id: userId,
+                                        amount: order.amount
+                                    })
+                                });
+
+                                if (verifyRes.ok) {
+                                    document.getElementById('checkoutNode').style.display = 'none';
+                                    document.getElementById('successNode').style.display = 'block';
+                                    syncCartQuantity();
+                                } else {
+                                    alert('Security Verification Failed. Transaction reversed.');
+                                    window.location.reload();
+                                }
+                            },
+                            modal: {
+                                ondismiss: function () {
+                                    btn.disabled = false;
+                                    btn.textContent = 'Complete Transaction';
+                                }
+                            }
+                        };
+
+                        const rzp = new Razorpay(options);
+                        rzp.open();
+                    } catch (err) {
+                        alert('Could not establish connection to Razorpay Node.');
+                        btn.disabled = false;
+                        btn.textContent = 'Complete Transaction';
+                    }
+                };
+
+            } catch (err) {
+                console.error(err);
+                document.getElementById('orderItems').innerHTML =
+                    `<p style="color:red; font-weight:600;">Node Synchronization Failed: Please check your connection or return to cart.</p>`;
+                const payBtn = document.getElementById('payBtn');
+                const payBtnText = document.getElementById('payBtnText');
+                if (payBtnText) payBtnText.textContent = 'Sync Failed';
+                if (payBtn) payBtn.disabled = true;
+            }
+        });
+    </script>
+</body>
+
+</html>

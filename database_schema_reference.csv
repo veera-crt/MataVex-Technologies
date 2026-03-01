@@ -1,0 +1,48 @@
+Table Name,Column Name,Data Type,Is Nullable,Default Value
+cart,id,integer,NO,nextval('cart_id_seq'::regclass)
+cart,user_id,integer,YES,
+cart,project_id,integer,YES,
+cart,project_name,text,YES,
+cart,project_category,text,YES,
+cart,added_at,timestamp without time zone,YES,CURRENT_TIMESTAMP
+library,id,integer,NO,nextval('library_id_seq'::regclass)
+library,user_id,integer,NO,
+library,user_name,character varying,YES,
+library,project_id,integer,NO,
+library,project_category,character varying,NO,
+library,project_name,character varying,YES,
+library,purchased_at,timestamp with time zone,YES,CURRENT_TIMESTAMP
+payments,id,integer,NO,nextval('payments_id_seq'::regclass)
+payments,user_id,integer,NO,
+payments,project_id,integer,NO,
+payments,project_name,character varying,NO,
+payments,project_category,character varying,YES,
+payments,order_id,character varying,NO,
+payments,payment_id,character varying,NO,
+payments,amount,numeric,NO,
+payments,status,character varying,YES,'SUCCESS'::character varying
+payments,paid_at,timestamp without time zone,YES,CURRENT_TIMESTAMP
+project_links,id,integer,NO,nextval('project_links_id_seq'::regclass)
+project_links,project_id,integer,NO,
+project_links,download_link,text,NO,
+project_links,created_at,timestamp without time zone,YES,CURRENT_TIMESTAMP
+projects,id,integer,NO,nextval('projects_id_seq'::regclass)
+projects,category,character varying,NO,
+projects,name,character varying,NO,
+projects,description,text,YES,
+projects,original_amount,numeric,YES,
+projects,offer_amount,numeric,YES,
+projects,offer_percentage,integer,YES,
+projects,tag,character varying,YES,
+projects,image_link,text,YES,
+projects,created_at,timestamp with time zone,YES,CURRENT_TIMESTAMP
+users,id,integer,NO,nextval('users_id_seq'::regclass)
+users,google_id,character varying,NO,
+users,email,USER-DEFINED,NO,
+users,name,character varying,YES,
+users,profile_picture,text,YES,
+users,provider,character varying,NO,'google'::character varying
+users,role,character varying,NO,'user'::character varying
+users,is_active,boolean,NO,true
+users,created_at,timestamp with time zone,NO,CURRENT_TIMESTAMP
+users,updated_at,timestamp with time zone,NO,CURRENT_TIMESTAMP

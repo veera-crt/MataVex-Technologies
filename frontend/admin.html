@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard | Matavex Technologies</title>
+    <link rel="stylesheet" href="css/index.css">
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+    <style>
+        body {
+            background: #f8fafc;
+            color: #1e293b;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .admin-nav {
+            background: #fff;
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .admin-nav h2 {
+            font-size: 20px;
+            font-weight: 800;
+            color: var(--color-primary);
+        }
+
+        .main-container {
+            padding: 40px;
+            display: flex;
+            gap: 30px;
+        }
+
+        .sidebar {
+            background: #fff;
+            width: 250px;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .sidebar h4 {
+            font-size: 13px;
+            text-transform: uppercase;
+            color: #64748b;
+            margin-bottom: 20px;
+            letter-spacing: 0.1em;
+        }
+
+        .table-list {
+            list-style: none;
+        }
+
+        .table-item {
+            padding: 12px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-bottom: 5px;
+            transition: 0.2s;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .table-item:hover {
+            background: #f1f5f9;
+            color: var(--color-primary);
+        }
+
+        .table-item.active {
+            background: var(--color-primary);
+            color: #fff;
+        }
+
+        .content-area {
+            flex: 1;
+            background: #fff;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            overflow-x: auto;
+        }
+
+        .header-group {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .header-group h1 {
+            font-size: 24px;
+            font-weight: 800;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+
+        th {
+            text-align: left;
+            padding: 15px;
+            border-bottom: 2px solid #f1f5f9;
+            color: #64748b;
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 12px;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #f1f5f9;
+            max-width: 200px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        tr:hover {
+            background: #fcfcfc;
+        }
+
+        .btn-action {
+            padding: 8px 15px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            border: 1px solid #ddd;
+            background: #fff;
+            transition: 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .btn-edit:hover {
+            background: #e0f2fe;
+            border-color: #bae6fd;
+            color: #0369a1;
+        }
+
+        .btn-delete:hover {
+            background: #fee2e2;
+            border-color: #fecaca;
+            color: #b91c1c;
+        }
+
+        /* Modal for Editing */
+        .edit-modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .edit-modal.active {
+            display: flex;
+        }
+
+        .edit-box {
+            background: #fff;
+            padding: 40px;
+            border-radius: 16px;
+            width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .edit-box h3 {
+            margin-bottom: 25px;
+            font-size: 20px;
+            font-weight: 800;
+        }
+
+        .edit-field {
+            margin-bottom: 15px;
+        }
+
+        .edit-field label {
+            display: block;
+            font-size: 12px;
+            font-weight: 700;
+            color: #64748b;
+            margin-bottom: 5px;
+        }
+
+        .edit-field input,
+        .edit-field textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        .edit-actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 25px;
+        }
+
+        .btn-save {
+            flex: 1;
+            padding: 14px;
+            background: var(--color-primary);
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .btn-cancel {
+            flex: 1;
+            padding: 14px;
+            background: #f1f5f9;
+            color: #64748b;
+            border: none;
+            border-radius: 8px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        @keyframes spin {
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .loader {
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(0, 0, 0, 0.1);
+            border-top-color: var(--color-primary);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="admin-nav">
+        <h2>MATAVEX <span style="color:#000;">CONTROL NODE</span></h2>
+        <div style="display:flex; align-items:center; gap:20px;">
+            <span id="adminName" style="font-size:14px; font-weight:600; color:#64748b;">[SECURE SESSION ACTIVE]</span>
+            <button onclick="logoutAdmin()" class="btn-action" style="color:#b91c1c;"><ion-icon
+                    name="log-out-outline"></ion-icon> Terminate</button>
+        </div>
+    </nav>
+
+    <main class="main-container">
+        <aside class="sidebar">
+            <h4>Database Tables</h4>
+            <ul class="table-list" id="tableList">
+                <p style="font-size:12px; color:#94a3b8;">Scanning Node...</p>
+            </ul>
+        </aside>
+
+        <section class="content-area">
+            <div class="header-group">
+                <h1 id="activeTableName">Select a Table</h1>
+                <div style="display:flex; align-items:center; gap:20px;">
+                    <button class="btn-action" id="addRowBtn" style="display:none; color:var(--color-primary);"
+                        onclick="openAddModal()"><ion-icon name="add-circle-outline"></ion-icon> Add New Row</button>
+                    <div id="tableStats" style="font-size:14px; color:#64748b; font-weight:600;"></div>
+                </div>
+            </div>
+
+            <div id="tableContent">
+                <div style="text-align: center; padding: 100px 0; color: #94a3b8;">
+                    <ion-icon name="layers-outline" style="font-size:60px; margin-bottom:20px;"></ion-icon>
+                    <p>Select a table from the sidebar to manage data archives.</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Row Edit Modal -->
+    <div class="edit-modal" id="editModal">
+        <div class="edit-box">
+            <h3 id="modalTitle">Edit Row</h3>
+            <div id="editForm"></div>
+            <div class="edit-actions">
+                <button class="btn-cancel" onclick="closeEditModal()">Cancel</button>
+                <button class="btn-save" id="saveRowBtn">Commit Changes</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:8000';
+        let currentTable = '';
+        let tableData = [];
+        let tableColumns = [];
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const token = localStorage.getItem('matavex_admin_token');
+            if (!token) {
+                window.location.href = 'admin_login.html';
+                return;
+            }
+            loadTables();
+        });
+
+        async function loadTables() {
+            const token = localStorage.getItem('matavex_admin_token');
+            try {
+                const res = await fetch(`${API_BASE}/api/v1/admin/tables`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                if (res.status === 401 || res.status === 403) {
+                    logoutAdmin();
+                    return;
+                }
+                const tables = await res.json();
+
+                const html = tables.map(t => `<li class="table-item" onclick="loadTableData('${t}', this)">${t}</li>`).join('');
+                document.getElementById('tableList').innerHTML = html;
+            } catch (e) {
+                console.error('Core sync fail');
+            }
+        }
+
+        async function loadTableData(tableName, el) {
+            currentTable = tableName;
+
+            // UI Update
+            document.querySelectorAll('.table-item').forEach(i => i.classList.remove('active'));
+            if (el) el.classList.add('active');
+
+            document.getElementById('activeTableName').textContent = tableName.toUpperCase();
+            document.getElementById('addRowBtn').style.display = 'inline-flex';
+            document.getElementById('tableContent').innerHTML = '<div style="text-align:center; padding:50px;"><div class="loader" style="margin:0 auto 20px;"></div><p>Synchronizing Data Node...</p></div>';
+
+            const token = localStorage.getItem('matavex_admin_token');
+            try {
+                const res = await fetch(`${API_BASE}/api/v1/admin/table/${tableName}`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const payload = await res.json();
+
+                tableColumns = payload.columns;
+                tableData = payload.data;
+
+                renderTable();
+                document.getElementById('tableStats').textContent = `${tableData.length} records retrieved`;
+            } catch (e) {
+                document.getElementById('tableContent').innerHTML = '<p style="color:red; text-align:center;">Failed to bridge to Table Data.</p>';
+            }
+        }
+
+        function renderTable() {
+            if (tableData.length === 0) {
+                document.getElementById('tableContent').innerHTML = '<p style="text-align:center; padding:50px; color:#94a3b8;">Archive is currently empty.</p>';
+                return;
+            }
+
+            let html = '<table><thead><tr>';
+            tableColumns.forEach(c => html += `<th>${c}</th>`);
+            html += '<th>Actions</th></tr></thead><tbody>';
+
+            tableData.forEach((row, idx) => {
+                html += '<tr>';
+                tableColumns.forEach(c => {
+                    const val = row[c] === null ? '<span style="color:#cbd5e1;">NULL</span>' : row[c];
+                    html += `<td title="${val}">${val}</td>`;
+                });
+                html += `
+                    <td>
+                        <div style="display:flex; gap:10px;">
+                            <button class="btn-action btn-edit" onclick="openEditModal(${idx})"><ion-icon name="create-outline"></ion-icon> Edit</button>
+                            <button class="btn-action btn-delete" onclick="deleteRow(${row.id})"><ion-icon name="trash-outline"></ion-icon> Delete</button>
+                        </div>
+                    </td>
+                `;
+                html += '</tr>';
+            });
+
+            html += '</tbody></table>';
+            document.getElementById('tableContent').innerHTML = html;
+        }
+
+        function openEditModal(idx) {
+            const row = tableData[idx];
+            let html = '';
+            tableColumns.forEach(c => {
+                const readonly = c === 'id' || c === 'created_at' || c === 'updated_at' ? 'readonly style="background:#f1f5f9;"' : '';
+
+                if (currentTable === 'projects' && c === 'category') {
+                    html += `
+                        <div class="edit-field">
+                            <label>${c}</label>
+                            <select id="edit_${c}">
+                                <option value="ai" ${row[c] === 'ai' ? 'selected' : ''}>AI Intelligence</option>
+                                <option value="data-science" ${row[c] === 'data-science' ? 'selected' : ''}>Data Analytics</option>
+                                <option value="cybersecurity" ${row[c] === 'cybersecurity' ? 'selected' : ''}>Cyber Security</option>
+                                <option value="systems" ${row[c] === 'systems' ? 'selected' : ''}>Systems</option>
+                            </select>
+                        </div>
+                    `;
+                } else if (currentTable === 'projects' && (c === 'original_amount' || c === 'offer_amount')) {
+                    html += `
+                        <div class="edit-field">
+                            <label>${c}</label>
+                            <input type="number" id="edit_${c}" value="${row[c] || ''}" oninput="calculatePercentage('edit')">
+                        </div>
+                    `;
+                } else if (currentTable === 'projects' && c === 'offer_percentage') {
+                    html += `
+                        <div class="edit-field">
+                            <label>${c}</label>
+                            <input type="text" id="edit_${c}" value="${row[c] || ''}" readonly style="background:#f1f5f9;">
+                        </div>
+                    `;
+                } else {
+                    html += `
+                        <div class="edit-field">
+                            <label>${c}</label>
+                            <input type="text" id="edit_${c}" value="${row[c] || ''}" ${readonly}>
+                        </div>
+                    `;
+                }
+            });
+            document.getElementById('editForm').innerHTML = html;
+
+            // Trigger calculation for existing values if in projects table
+            if (currentTable === 'projects') {
+                calculatePercentage('edit');
+            }
+
+            document.getElementById('modalTitle').textContent = `Manage Record #${row.id}`;
+            document.getElementById('editModal').classList.add('active');
+
+            document.getElementById('saveRowBtn').onclick = () => saveRow(row.id);
+        }
+
+        function closeEditModal() {
+            document.getElementById('editModal').classList.remove('active');
+        }
+
+        async function saveRow(rowId) {
+            const updates = {};
+            tableColumns.forEach(c => {
+                if (c !== 'id' && c !== 'created_at' && c !== 'updated_at') {
+                    const val = document.getElementById(`edit_${c}`).value;
+                    // Sanitize numeric fields
+                    if (currentTable === 'projects' && (c === 'original_amount' || c === 'offer_amount' || c === 'offer_percentage')) {
+                        updates[c] = parseFloat(val) || 0;
+                    } else {
+                        updates[c] = val;
+                    }
+                }
+            });
+
+            const token = localStorage.getItem('matavex_admin_token');
+            const btn = document.getElementById('saveRowBtn');
+            btn.disabled = true;
+            btn.textContent = 'Committing...';
+
+            try {
+                const res = await fetch(`${API_BASE}/api/v1/admin/table/${currentTable}`, {
+                    method: 'PUT',
+                    headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ id: rowId, updates })
+                });
+
+                if (res.ok) {
+                    closeEditModal();
+                    loadTableData(currentTable);
+                } else {
+                    alert('Commit Failed: Check data integrity constraints.');
+                }
+            } catch (e) {
+                alert('Connection to Database Node severed.');
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'Commit Changes';
+            }
+        }
+
+        async function deleteRow(rowId) {
+            if (!confirm('Warning: This action will permanently remove this archive record. Continue?')) return;
+
+            const token = localStorage.getItem('matavex_admin_token');
+            try {
+                const res = await fetch(`${API_BASE}/api/v1/admin/table/${currentTable}/${rowId}`, {
+                    method: 'DELETE',
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+
+                if (res.ok) {
+                    loadTableData(currentTable);
+                } else {
+                    alert('Access Denied or Record Lock active.');
+                }
+            } catch (e) {
+                alert('Node Sync Failure during deletion.');
+            }
+        }
+
+        function openAddModal() {
+            let html = '';
+            tableColumns.forEach(c => {
+                const readonly = (c === 'id' || c === 'created_at' || c === 'updated_at') ? 'readonly style="background:#f1f5f9;"' : '';
+
+                if (currentTable === 'projects' && c === 'category') {
+                    html += `
+                        <div class="edit-field">
+                            <label>${c}</label>
+                            <select id="add_${c}">
+                                <option value="ai">AI Intelligence</option>
+                                <option value="data-science">Data Analytics</option>
+                                <option value="cybersecurity">Cyber Security</option>
+                                <option value="systems">Systems</option>
+                            </select>
+                        </div>
+                    `;
+                } else if (currentTable === 'projects' && (c === 'original_amount' || c === 'offer_amount')) {
+                    html += `
+                        <div class="edit-field">
+                            <label>${c}</label>
+                            <input type="number" id="add_${c}" placeholder="Enter ${c}..." oninput="calculatePercentage('add')">
+                        </div>
+                    `;
+                } else if (currentTable === 'projects' && c === 'offer_percentage') {
+                    html += `
+                         <div class="edit-field">
+                            <label>${c}</label>
+                            <input type="text" id="add_${c}" placeholder="Calculated..." readonly style="background:#f1f5f9;">
+                        </div>
+                    `;
+                } else {
+                    html += `
+                        <div class="edit-field">
+                            <label>${c}</label>
+                            <input type="text" id="add_${c}" placeholder="Enter ${c}..." ${readonly}>
+                        </div>
+                    `;
+                }
+            });
+            document.getElementById('editForm').innerHTML = html;
+            document.getElementById('modalTitle').textContent = `Add New Record to ${currentTable.toUpperCase()}`;
+            document.getElementById('editModal').classList.add('active');
+
+            document.getElementById('saveRowBtn').onclick = insertRow;
+        }
+
+        function calculatePercentage(prefix) {
+            const originalVal = document.getElementById(`${prefix}_original_amount`).value;
+            const offerVal = document.getElementById(`${prefix}_offer_amount`).value;
+            const target = document.getElementById(`${prefix}_offer_percentage`);
+
+            if (originalVal && offerVal) {
+                const original = parseFloat(originalVal);
+                const offer = parseFloat(offerVal);
+                if (original > 0) {
+                    const saved = original - offer;
+                    const percentage = Math.round((saved / original) * 100);
+                    // Set as plain number for database compatibility
+                    target.value = percentage;
+                }
+            } else {
+                target.value = '';
+            }
+        }
+
+        async function insertRow() {
+            const record = {};
+            tableColumns.forEach(c => {
+                if (c !== 'id' && c !== 'created_at' && c !== 'updated_at') {
+                    const val = document.getElementById(`add_${c}`).value;
+                    // Sanitize numeric fields for JSON payload
+                    if (currentTable === 'projects' && (c === 'original_amount' || c === 'offer_amount' || c === 'offer_percentage')) {
+                        record[c] = parseFloat(val) || 0;
+                    } else {
+                        record[c] = val;
+                    }
+                }
+            });
+
+            const token = localStorage.getItem('matavex_admin_token');
+            const btn = document.getElementById('saveRowBtn');
+            btn.disabled = true;
+            btn.textContent = 'Committing...';
+
+            try {
+                const res = await fetch(`${API_BASE}/api/v1/admin/table/${currentTable}`, {
+                    method: 'POST',
+                    headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ record })
+                });
+
+                if (res.ok) {
+                    closeEditModal();
+                    loadTableData(currentTable);
+                } else {
+                    const d = await res.json();
+                    alert('Commit Failed: ' + (d.detail || 'Check data integrity constraints.'));
+                }
+            } catch (e) {
+                alert('Connection to Database Node severed.');
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'Commit Changes';
+            }
+        }
+
+        function logoutAdmin() {
+            localStorage.removeItem('matavex_admin_token');
+            window.location.href = 'admin_login.html';
+        }
+    </script>
+</body>
+
+</html>
