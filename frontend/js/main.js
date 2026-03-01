@@ -426,7 +426,7 @@ async function loadProjects(category, gridId) {
                 </div>
                 <div class="card-footer">
                     <div class="product-title">${project.name}</div>
-                    <p style="font-size: 13px; color: var(--color-text-para); margin: 5px 0 15px; line-height: 1.4;">${project.description}</p>
+                    <p style="display: none; font-size: 13px; color: var(--color-text-para); margin: 5px 0 15px; line-height: 1.4;">${project.description}</p>
                     <div class="price-container" style="display: flex; align-items: center; gap: 10px; margin-top: auto;">
                         <div class="price-tag">₹${parseFloat(project.offer_amount).toLocaleString('en-IN', { minimumFractionDigits: 2 })}</div>
                         <div class="original-price" style="text-decoration: line-through; color: var(--color-text-muted); font-size: 13px;">₹${parseFloat(project.original_amount).toLocaleString('en-IN', { minimumFractionDigits: 2 })}</div>
