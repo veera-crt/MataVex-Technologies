@@ -10,6 +10,12 @@ from google.auth.transport import requests as google_requests
 from flask import Response, stream_with_context
 
 # Core Backend Modules
+try:
+    from dotenv import load_dotenv
+    load_dotenv()
+except ImportError:
+    pass
+
 from backend import db, auth, invoice, admin
 import razorpay
 
@@ -76,12 +82,82 @@ def send_assets(path):
 
 # --- API Routes ---
 
+@app.route("/api/v1/auth/register", methods=["POST"])
+def register_user():
+    data = request.json
+    email = data.get("email")
+    password = data.get("password")
+    name = data.get("name", "")
+
+    if not email or not password:
+        return jsonify({"detail": "Email and password required"}), 400
+
+    try:
+        # Check if user exists
+        check_query = "SELECT id FROM users WHERE email = %s"
+        existing = db.execute_query(check_query, (email,))
+        if existing:
+            return jsonify({"detail": "User already exists with this email"}), 400
+
+        hashed_password = auth.hash_password(password)
+        insert_query = """
+        INSERT INTO users (email, name, password_hash, provider)
+        VALUES (%s, %s, %s, 'email') RETURNING *;
+        """
+        user_record = db.execute_query(insert_query, (email, name, hashed_password))
+        
+        access_token = auth.create_access_token(data={"sub": email, "role": user_record[0][6]})
+
+        return jsonify({
+            "success": True,
+            "access_token": access_token,
+            "token_type": "bearer",
+            "user": user_record[0]
+        })
+    except Exception as e:
+        return jsonify({"detail": "Registration failed"}), 500
+
+@app.route("/api/v1/auth/login", methods=["POST"])
+def email_login():
+    data = request.json
+    email = data.get("email")
+    password = data.get("password")
+
+    if not email or not password:
+        return jsonify({"detail": "Email and password required"}), 400
+
+    try:
+        query = "SELECT * FROM users WHERE email = %s"
+        user_record = db.execute_query(query, (email,))
+
+        if not user_record:
+            return jsonify({"detail": "Invalid credentials"}), 401
+        
+        user = user_record[0]
+        password_hash = user[10]
+
+        if not password_hash:
+            return jsonify({"detail": "This account uses Google Login. Please sign in with Google."}), 401
+
+        if not auth.verify_password(password, password_hash):
+            return jsonify({"detail": "Invalid credentials"}), 401
+        
+        access_token = auth.create_access_token(data={"sub": email, "role": user[6]})
+        
+        return jsonify({
+            "success": True,
+            "access_token": access_token,
+            "token_type": "bearer",
+            "user": user
+        })
+    except Exception as e:
+        return jsonify({"detail": "Login failed"}), 500
+
 @app.route("/api/v1/auth/google", methods=["POST"])
 def google_auth():
     data = request.json
     if not data or 'id_token' not in data:
         return jsonify({"detail": "Missing id_token"}), 400
-    
     
     try:
         # 1. VERIFY GOOGLE ID TOKEN
@@ -99,13 +175,14 @@ def google_auth():
         return jsonify({"detail": "Identity Verification Failed"}), 500
 
     try:
+        # Use email for conflict resolution to merge Google/Email accounts
         query = """
-        INSERT INTO users (google_id, email, name, profile_picture)
-        VALUES (%s, %s, %s, %s)
-        ON CONFLICT (google_id) DO UPDATE 
-        SET email = EXCLUDED.email, 
-            name = EXCLUDED.name, 
-            profile_picture = EXCLUDED.profile_picture,
+        INSERT INTO users (google_id, email, name, profile_picture, provider)
+        VALUES (%s, %s, %s, %s, 'google')
+        ON CONFLICT (email) DO UPDATE 
+        SET google_id = EXCLUDED.google_id,
+            name = COALESCE(users.name, EXCLUDED.name), 
+            profile_picture = COALESCE(users.profile_picture, EXCLUDED.profile_picture),
             updated_at = CURRENT_TIMESTAMP
         RETURNING *;
         """
@@ -517,4 +594,5 @@ def health_check():
         return jsonify({"detail": "Internal Core Sync Failure"}), 503
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=8000, debug=False)
+    print("\n🚀 [SYSTEM_BOOT]: local environment active (Port 8000)")
+    app.run(host="0.0.0.0", port=8000, debug=True)
