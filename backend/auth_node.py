@@ -3,9 +3,7 @@ from datetime import datetime, timedelta
 from typing import Optional
 from jose import JWTError, jwt
 from passlib.context import CryptContext
-from dotenv import load_dotenv
 
-load_dotenv()
 
 # Configuration
 SECRET_KEY = os.getenv("SECRET_KEY", "fallback_secret_keep_it_safe")
