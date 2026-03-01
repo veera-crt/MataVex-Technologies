@@ -455,7 +455,7 @@ def verify_payment():
             if user_email:
                 invoice.send_invoice_email(user_email, pdf_path, data['razorpay_payment_id'])
         except Exception as inv_err:
-            pass
+            print(f"Failed to generate/send invoice: {inv_err}")
 
         # 4. Clear Cart
         db.execute_query("DELETE FROM cart WHERE user_id = %s", (user_id,))
