@@ -13,11 +13,11 @@
     <style>
         .checkout-node {
             max-width: 800px;
-            margin: 180px auto 100px;
-            padding: 40px;
+            margin: 0 auto 100px;
+            padding: 50px;
             background: #fff;
-            border-radius: 24px;
-            box-shadow: 0 20px 50px rgba(0, 107, 182, 0.08);
+            border-radius: 32px;
+            box-shadow: 0 30px 60px rgba(0, 107, 182, 0.1);
             border: 1px solid var(--color-border);
         }
 
@@ -31,7 +31,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 15px 0;
+            padding: 18px 0;
             border-bottom: 1px dashed #eee;
         }
 
@@ -42,23 +42,27 @@
         .order-item h4 {
             font-size: 16px;
             color: var(--color-text-heading);
+            font-weight: 600;
         }
 
         .order-item span {
             color: var(--color-primary);
             font-weight: 700;
+            font-family: 'Inter', sans-serif;
         }
 
         .total-node {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-top: 20px;
+            margin-top: 30px;
+            gap: 20px;
         }
 
         .total-node h2 {
-            font-size: 24px;
+            font-size: 28px;
             font-weight: 800;
+            letter-spacing: -0.02em;
         }
 
         .payment-lock {
@@ -69,12 +73,80 @@
             color: #10b981;
             font-weight: 600;
             font-size: 14px;
-            margin-top: 30px;
+            margin-top: 40px;
+            padding-top: 25px;
+            border-top: 1px solid #f0f0f0;
+        }
+
+        .checkout-actions {
+            display: flex;
+            gap: 15px;
+        }
+
+        @media (max-width: 768px) {
+            .checkout-node {
+                margin: 20px 0 60px;
+                padding: 30px 20px;
+                border-radius: 24px;
+            }
+
+            .total-node {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 30px;
+            }
+
+            .checkout-actions {
+                width: 100%;
+                flex-direction: column-reverse;
+            }
+
+            .checkout-actions button {
+                width: 100%;
+                padding: 18px !important;
+            }
+
+            .order-item h4 {
+                font-size: 14px;
+                max-width: 60%;
+            }
         }
     </style>
 </head>
 
 <body>
+    <!-- Mobile Slide Menu -->
+    <div class="mobile-drawer" id="mobileDrawer">
+        <div class="drawer-header">
+            <div class="drawer-logo">
+                <img src="assets/monogram.png" alt="MataVex" class="monogram-icon">
+                <span class="brand-text">MataVex <span class="highlight">Tech</span></span>
+            </div>
+            <ion-icon name="close-outline" class="close-drawer" id="closeDrawer"></ion-icon>
+        </div>
+        <div class="drawer-links">
+            <a href="index.html">Home</a>
+            <div class="drawer-accordion">
+                <div class="accordion-header" id="fullStackToggle">
+                    Projects <ion-icon name="chevron-down-outline"></ion-icon>
+                </div>
+                <div class="accordion-content" id="fullStackContent">
+                    <a href="ai.html">AI Intelligence</a>
+                    <a href="data-science.html">Data Analytics</a>
+                    <a href="cybersecurity.html">Cyber Security</a>
+                    <a href="systems.html">Systems</a>
+                </div>
+            </div>
+            <a href="backend.html">Architecture</a>
+            <a href="frontend.html">Interface</a>
+            <a href="consulting.html">Consulting</a>
+        </div>
+        <div class="drawer-footer">
+            &copy; 2026 MataVex Technologies
+        </div>
+    </div>
+    <div class="drawer-overlay" id="drawerOverlay"></div>
+
     <header>
         <div class="announcement-bar">
             Secure Delivery & Premium Project Support Available
@@ -86,13 +158,6 @@
                     <span class="brand-text">MataVex <span class="highlight">Tech</span></span>
                 </a>
 
-                <div class="search-box-inline" id="searchBoxInline">
-                    <ion-icon name="search-outline" class="search-icon" id="searchIconTrigger"></ion-icon>
-                    <div class="search-input-field" id="searchInputField">
-                        <input type="text" id="projectSearchInput" placeholder="Filter projects..." autocomplete="off">
-                        <ion-icon name="close-outline" class="search-close-inline" id="closeSearchInline"></ion-icon>
-                    </div>
-                </div>
             </div>
 
             <div class="header-center">
@@ -135,47 +200,78 @@
         </div>
     </header>
 
-    <main class="section-container">
-        <div class="checkout-node" id="checkoutNode">
-            <h1 class="page-title" style="text-align:left; margin-bottom:10px;">Secure Checkout</h1>
-            <p style="color:var(--color-text-para); margin-bottom:30px;">Verify your order details and proceed to
-                high-speed payment gateway.</p>
+    <main>
+        <div class="section-container page-header-padding">
+            <div class="checkout-node" id="checkoutNode">
+                <h1 class="page-title" style="text-align:left; margin-bottom:10px;">Secure Checkout</h1>
+                <p style="color:var(--color-text-para); margin-bottom:30px;">Verify your order details and proceed to
+                    high-speed payment gateway.</p>
 
-            <div id="orderItems" class="order-summary">
-                <!-- Data from JS -->
-                <p>Synchronizing with Matavex Finance Node...</p>
-            </div>
-
-            <div class="total-node">
-                <div>
-                    <p
-                        style="font-size:12px; font-weight:700; color:var(--color-text-muted); text-transform:uppercase;">
-                        Grand Total</p>
-                    <h2 id="grandTotal">₹0.00</h2>
+                <div id="orderItems" class="order-summary">
+                    <!-- Data from JS -->
+                    <div class="loading-state" style="padding: 20px 0;">
+                        <span class="spinner"></span>
+                        <p style="margin-top: 15px;">Synchronizing with Matavex Finance Node...</p>
+                    </div>
                 </div>
-                <div style="display: flex; gap: 15px;">
-                    <button id="cancelBtn" class="btn-secondary" style="padding:15px 30px;">Cancel</button>
-                    <button id="payBtn" class="btn-proceed" style="padding:15px 50px;" disabled>
-                        <span id="payBtnText">Complete Transaction</span>
-                    </button>
+
+                <div class="total-node">
+                    <div>
+                        <p
+                            style="font-size:11px; font-weight:700; color:var(--color-text-muted); text-transform:uppercase; letter-spacing: 1px;">
+                            Grand Total</p>
+                        <h2 id="grandTotal">₹0.00</h2>
+                    </div>
+                    <div class="checkout-actions">
+                        <button id="cancelBtn" class="btn-secondary" style="padding:15px 30px;">Cancel</button>
+                        <button id="payBtn" class="btn-proceed" style="padding:15px 50px;" disabled>
+                            <span id="payBtnText">Complete Transaction</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="payment-lock">
+                    <ion-icon name="shield-checkmark-outline" style="font-size:18px;"></ion-icon>
+                    128-bit Encrypted Transaction Node
                 </div>
             </div>
 
-            <div class="payment-lock">
-                <ion-icon name="shield-checkmark-outline" style="font-size:18px;"></ion-icon>
-                128-bit Encrypted Transaction Node
+            <div id="successNode" class="checkout-node" style="display:none; text-align:center;">
+                <ion-icon name="checkmark-circle" style="font-size:80px; color:#10b981; margin-bottom:20px;"></ion-icon>
+                <h1 class="page-title" style="text-align: center;">Transaction Successful</h1>
+                <p style="max-width: 500px; margin: 0 auto;">Your project acquisition has been archived in our secure
+                    node. Check your profile for license details.
+                </p>
+                <a href="index.html" class="btn-proceed"
+                    style="display:inline-block; margin-top:40px; text-decoration:none; padding: 15px 50px;">Return to
+                    Portal</a>
             </div>
-        </div>
-
-        <div id="successNode" class="checkout-node" style="display:none; text-align:center;">
-            <ion-icon name="checkmark-circle" style="font-size:80px; color:#10b981; margin-bottom:20px;"></ion-icon>
-            <h1 class="page-title">Transaction Successful</h1>
-            <p>Your project acquisition has been archived in our secure node. Check your profile for license details.
-            </p>
-            <a href="index.html" class="btn-proceed"
-                style="display:inline-block; margin-top:30px; text-decoration:none;">Return to Portal</a>
         </div>
     </main>
+
+    <footer class="main-footer">
+        <div class="section-container">
+            <div class="footer-logo">
+                <img src="assets/monogram.png" alt="MataVex">
+                <h3>MataVex <span class="highlight">Tech</span></h3>
+            </div>
+            <p class="footer-tagline">
+                Engineering Secure Digital Futures through premium software projects and cybersecurity projects.
+            </p>
+            <div class="footer-legal">
+                <a href="privacy.html">Privacy Policy</a>
+                <span class="sep">|</span>
+                <a href="terms.html">Terms of Service</a>
+                <span class="sep">|</span>
+                <a href="refund.html">Refund Policy</a>
+                <span class="sep">|</span>
+                <a href="contact.html">Contact</a>
+            </div>
+            <p class="footer-copyright">
+                &copy; 2026 MataVex Technologies. All rights reserved.
+            </p>
+        </div>
+    </footer>
 
     <script src="js/main.js"></script>
     <script>

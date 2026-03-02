@@ -15,12 +15,31 @@ function checkLogin() {
     const loggedInDiv = document.getElementById('logged-in-user');
     const loggedOutDiv = document.getElementById('logged-out-user');
     const nameSpan = document.getElementById('header-user-name');
+    const drawerLinks = document.querySelector('.drawer-links');
 
-    if (user && nameSpan && loggedInDiv && loggedOutDiv) {
+    if (user && loggedInDiv && loggedOutDiv) {
         try {
             const userData = JSON.parse(user);
-            // Index 3 is name, 2 is email
-            nameSpan.textContent = userData[3] || userData[2].split('@')[0];
+            const userName = userData[3] || userData[2].split('@')[0];
+
+            if (nameSpan) nameSpan.textContent = userName;
+
+            // Handle Mobile Drawer Name
+            if (drawerLinks && !document.getElementById('drawer-user-info')) {
+                const userInfo = document.createElement('div');
+                userInfo.id = 'drawer-user-info';
+                userInfo.className = 'drawer-user-info';
+                userInfo.innerHTML = `
+                    <div class="user-avatar">
+                        <ion-icon name="person-circle-outline"></ion-icon>
+                    </div>
+                    <div class="user-details">
+                        <span class="user-name">${userName}</span>
+                        <span class="user-welcome">Member Portal</span>
+                    </div>
+                `;
+                drawerLinks.prepend(userInfo);
+            }
 
             loggedInDiv.style.display = 'flex';
             loggedOutDiv.style.display = 'none';
@@ -32,6 +51,8 @@ function checkLogin() {
     } else if (loggedInDiv && loggedOutDiv) {
         loggedInDiv.style.display = 'none';
         loggedOutDiv.style.display = 'flex';
+        const drawerUser = document.getElementById('drawer-user-info');
+        if (drawerUser) drawerUser.remove();
     }
 }
 
