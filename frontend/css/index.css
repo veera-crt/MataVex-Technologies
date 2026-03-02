@@ -938,8 +938,21 @@ nav a.active,
 
 /* Updated Responsive Adaptations */
 @media (max-width: 768px) {
+    .header-top {
+        position: relative;
+        height: 70px;
+        /* Force height to match desktop/scrolled for consistency */
+    }
+
     .mobile-menu-icon {
-        display: block;
+        display: block !important;
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        font-size: 30px;
+        z-index: 10;
+        cursor: pointer;
     }
 
     .announcement-bar {
@@ -950,12 +963,10 @@ nav a.active,
 
     .desktop-nav {
         display: none;
-        /* Hide primary nav on mobile, use menu instead */
     }
 
-    .logo-main {
-        font-size: 20px;
-        letter-spacing: 1px;
+    .logo-main .brand-text {
+        display: none;
     }
 
     .monogram-icon {
@@ -965,9 +976,14 @@ nav a.active,
     .header-left,
     .header-right {
         gap: 15px;
+        flex: 1;
     }
 
-    .header-right ion-icon {
+    .header-right {
+        justify-content: flex-end;
+    }
+
+    .header-right ion-icon:not(.mobile-menu-icon) {
         font-size: 24px;
     }
 
