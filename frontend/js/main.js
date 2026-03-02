@@ -252,37 +252,47 @@ function createProjectModal() {
     const modalHTML = `
         <div id="projectDetailModal" class="project-modal">
             <div class="modal-content-wrapper">
+                <div class="modal-fixed-header">
+                    <div class="back-btn" onclick="closeProjectModal()">
+                        <ion-icon name="arrow-back-outline"></ion-icon>
+                        <span>Back</span>
+                    </div>
+                </div>
+
                 <div class="close-project-modal" onclick="closeProjectModal()">
                     <ion-icon name="close-outline"></ion-icon>
                 </div>
 
-                <div class="modal-body">
-                    <div class="modal-info">
-                        <h1 id="modalTitle">Project Title</h1>
-                        <div class="modal-price" id="modalPrice">Rs. 0,000.00</div>
-                        <div class="modal-shipping">
-                            <span class="link">Shipping</span> calculated at checkout.
+                <div class="modal-body-scroller">
+                    <div class="modal-body">
+                        <div class="modal-image-side">
+                            <div class="image-branding">
+                                <div class="brand-main">MATAVEX CORE</div>
+                                <div class="brand-sub">WWW.MATAVEX.TECH</div>
+                            </div>
+                            <img id="modalImage" src="" alt="Project Image">
                         </div>
                         
-                        <div class="modal-actions-group">
-                            <button class="btn-add-cart" id="modalAddToCart">Add to cart</button>
-                            <button class="btn-buy-now" id="modalBuyNow">Buy it now</button>
-                        </div>
+                        <div class="modal-info">
+                            <h1 id="modalTitle">Project Title</h1>
+                            <div class="modal-price" id="modalPrice">Rs. 0,000.00</div>
+                            <div class="modal-shipping">
+                                <span class="link">Shipping</span> calculated at checkout.
+                            </div>
+                            
+                            <div class="modal-actions-group">
+                                <button class="btn-add-cart" id="modalAddToCart">Add to cart</button>
+                                <button class="btn-buy-now" id="modalBuyNow">Buy it now</button>
+                            </div>
 
-                        <div class="modal-description-title">
-                            <ion-icon name="information-circle-outline"></ion-icon>
-                            Product Description
+                            <div class="modal-description-title">
+                                <ion-icon name="information-circle-outline"></ion-icon>
+                                Product Description
+                            </div>
+                            <div class="modal-description-text" id="modalDescription">
+                                Loading description...
+                            </div>
                         </div>
-                        <div class="modal-description-text" id="modalDescription">
-                            Loading description...
-                        </div>
-                    </div>
-                    <div class="modal-image-side">
-                        <div class="image-branding">
-                            <div class="brand-main">MATAVEX CORE</div>
-                            <div class="brand-sub">WWW.MATAVEX.TECH</div>
-                        </div>
-                        <img id="modalImage" src="" alt="Project Image">
                     </div>
                 </div>
             </div>

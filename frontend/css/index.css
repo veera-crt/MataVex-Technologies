@@ -1570,27 +1570,24 @@ header.scrolled nav {
     .project-modal {
         padding: 0;
         align-items: flex-end;
-        overflow: hidden;
-        /* Prevent background scroll overlap */
     }
 
     .modal-content-wrapper {
         max-width: 100%;
-        height: 92vh;
-        /* Slightly taller for better view */
+        height: 94vh;
         border-radius: 30px 30px 0 0;
-        overflow-y: auto !important;
-        -webkit-overflow-scrolling: touch;
-        /* Smooth iOS scroll */
-        display: block;
-        /* Change from flex to block to ensure natural container scrolling */
+        display: flex;
+        flex-direction: column;
+        overflow: hidden !important;
+        /* Wrapper doesn't scroll, scroller does */
     }
 }
 
 .modal-content-wrapper {
     background: var(--color-bg);
     width: 100%;
-    max-width: 900px;
+    max-width: 950px;
+    /* Slightly wider for better PC viewing */
     border-radius: 20px;
     overflow: hidden;
     position: relative;
@@ -1600,33 +1597,75 @@ header.scrolled nav {
     border: 1px solid var(--color-border);
 }
 
+.modal-fixed-header {
+    display: none;
+}
+
+.modal-body-scroller {
+    width: 100%;
+    height: 100%;
+    overflow-y: visible;
+}
+
+@media (max-width: 768px) {
+    .modal-fixed-header {
+        display: flex;
+        align-items: center;
+        padding: 16px 20px;
+        background: #fff;
+        border-bottom: 1px solid var(--color-border);
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.03);
+    }
+
+    .back-btn {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-weight: 800;
+        color: var(--color-primary);
+        cursor: pointer;
+        font-size: 14px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .back-btn ion-icon {
+        font-size: 24px;
+    }
+
+    .modal-body-scroller {
+        flex: 1;
+        overflow-y: auto !important;
+        -webkit-overflow-scrolling: touch;
+    }
+}
+
 
 
 .modal-body {
     display: grid;
-    grid-template-columns: 1.2fr 1fr;
-    padding: 40px;
-    gap: 40px;
+    grid-template-columns: 1fr 1.2fr;
+    /* Image left, Info right */
+    padding: 0;
+    /* Removing inner padding for full bleed image look */
+}
+
+@media (max-width: 1024px) {
+    .modal-body {
+        grid-template-columns: 1fr;
+    }
 }
 
 @media (max-width: 768px) {
     .modal-body {
-        grid-template-columns: 1fr;
-        padding: 30px 20px 100px;
-        gap: 30px;
+        padding-bottom: 60px;
     }
 
-    .modal-image-side {
-        order: -1;
-        /* Image on top for mobile */
-    }
-
-    .modal-info h1 {
-        font-size: 1.5rem;
-    }
-
-    .modal-actions-group {
-        max-width: 100%;
+    .modal-info {
+        padding: 30px 24px;
     }
 }
 
@@ -1736,13 +1775,20 @@ header.scrolled nav {
 
 .modal-image-side {
     background: var(--color-bg-alt);
-    border-radius: 18px;
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 24px;
+    padding: 40px;
     position: relative;
-    box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.02);
+    min-height: 480px;
+}
+
+@media (max-width: 768px) {
+    .modal-image-side {
+        min-height: 280px;
+        padding: 20px;
+        border-radius: 0;
+    }
 }
 
 .modal-image-side img {
