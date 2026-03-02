@@ -314,6 +314,11 @@ function showProjectDetails(id, projectsList, category, isInCart = false, isBoug
     const addToCartBtn = document.getElementById('modalAddToCart');
     const buyNowBtn = document.getElementById('modalBuyNow');
 
+    // Use global cart tracking if available to ensure live updates
+    if (window.matavexCartIds && window.matavexCartIds.includes(id)) {
+        isInCart = true;
+    }
+
     if (isBought) {
         addToCartBtn.innerHTML = '<ion-icon name="cloud-done"></ion-icon> In Library';
         addToCartBtn.disabled = true;
@@ -324,11 +329,20 @@ function showProjectDetails(id, projectsList, category, isInCart = false, isBoug
         addToCartBtn.innerHTML = '<ion-icon name="checkmark-circle"></ion-icon> Added in card';
         addToCartBtn.disabled = true;
         addToCartBtn.style.opacity = '0.7';
+
+        // Disable Buy Now if already in cart as requested
+        buyNowBtn.innerHTML = '<ion-icon name="cart-outline"></ion-icon> Already in cart';
+        buyNowBtn.disabled = true;
+        buyNowBtn.style.opacity = '0.5';
     } else {
         addToCartBtn.innerHTML = '<ion-icon name="cart-outline"></ion-icon> Add to cart';
         addToCartBtn.disabled = false;
         addToCartBtn.style.opacity = '1';
         addToCartBtn.onclick = () => handleAddToCart(project, category);
+
+        buyNowBtn.innerHTML = 'Buy it now';
+        buyNowBtn.disabled = false;
+        buyNowBtn.style.opacity = '1';
         buyNowBtn.onclick = () => handlePayment(project.id, project.name, category);
     }
 
@@ -379,6 +393,12 @@ async function handleAddToCart(project, category, silent = false) {
                 } else {
                     showCartNotification(project.name);
                     syncCartQuantity();
+
+                    // Update global tracking
+                    if (!window.matavexCartIds) window.matavexCartIds = [];
+                    if (!window.matavexCartIds.includes(project.id)) {
+                        window.matavexCartIds.push(project.id);
+                    }
                 }
                 closeProjectModal();
             }
@@ -436,6 +456,19 @@ async function loadProjects(category, gridId) {
         if (!response.ok) throw new Error('Failed to fetch projects');
         const projects = await response.json();
 
+        // Also fetch cart items to accurately disable buttons if already added
+        let cartItemIds = [];
+        if (userStr) {
+            const userData = JSON.parse(userStr);
+            const cartRes = await fetch(`/api/v1/cart/${userData[0]}`);
+            if (cartRes.ok) {
+                const cartData = await cartRes.json();
+                cartItemIds = cartData.map(item => item.id);
+                // Initialize global tracking
+                window.matavexCartIds = cartItemIds;
+            }
+        }
+
         window[`${category}Projects`] = projects;
         grid.innerHTML = '';
 
@@ -446,9 +479,10 @@ async function loadProjects(category, gridId) {
 
         projects.forEach(project => {
             const isBought = purchasedIds.includes(project.id);
+            const isInCart = cartItemIds.includes(project.id);
             const card = document.createElement('div');
             card.className = 'product-card';
-            card.onclick = () => showProjectDetails(project.id, window[`${category}Projects`], category, false, isBought);
+            card.onclick = () => showProjectDetails(project.id, window[`${category}Projects`], category, isInCart, isBought);
 
             card.innerHTML = `
                 <div class="image-container">
